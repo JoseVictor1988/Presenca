@@ -627,7 +627,8 @@
             const callbackName = 'jsonpCallback_' + Math.random().toString(36).substr(2, 8);
 
             window[callbackName] = function (data) {
-                allEmployees = data;
+                // Filtra funcionários válidos (com Nome e Matrícula preenchidos)
+                allEmployees = data.filter(emp => emp.Nome && emp.Matrícula);
                 responsaveis = [...new Set(allEmployees.map(emp => emp.Responsável).filter(Boolean))];
                 filteredEmployees = allEmployees;
 
