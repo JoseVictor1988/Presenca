@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Presença - Funcionários</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #fbfbfc 0%, #b7ddfc 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 16px 8px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+            margin-bottom: 4px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        .controls {
+            padding: 10px 10px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .date-display {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 7px 14px;
+            border: none;
+            border-radius: 18px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #018016 0%, #54f77c 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #999999 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #7c0000 0%, #f75369 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-container {
+            padding: 20px 30px 0 30px;
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 0;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .search-box {
+            height: 50px;
+            position: relative;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+        }
+
+        .stats {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            min-width: 120px;
+        }
+
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.8em;
+        }
+
+        .table-container {
+            padding: 0 15px 15px 15px;
+            max-height: 65vh;
+            overflow-y: auto;
+            background: white;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 0;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+        }
+
+        .table th {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            font-size: 0.9em;
+        }
+
+        .table th:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        .table th:last-child {
+            border-top-right-radius: 10px;
+        }
+
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 0.9em;
+        }
+
+        .table tr:hover {
+            background: #f8f9fa;
+            transition: all 0.2s ease;
+        }
+
+        .employee-row {
+            transition: all 0.3s ease;
+        }
+
+        .matricula {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 0.85em;
+        }
+
+        .nome {
+            color: #495057;
+            font-size: 0.9em;
+        }
+
+        .status-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 0.7em;
+            width: 80px;
+            text-align: center;
+        }
+
+        .status-btn.entrada.marcado {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-btn.entrada.nao-marcado {
+            background: #dc3545;
+            color: white;
+        }
+
+        .status-btn.saida.marcado {
+            background: #007bff;
+            color: white;
+        }
+
+        .status-btn.saida.nao-marcado {
+            background: #6c757d;
+            color: white;
+        }
+
+        .status-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .time-display {
+            font-size: 0.7em;
+            color: #6c757d;
+            margin-top: 2px;
+        }
+
+        .responsavel-container {
+            padding: 20px 30px 0 30px;
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #responsavelSelect {
+            padding: 12px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 1em;
+            font-family: 'Arial', sans-serif;
+            color: #2c3e50;
+            background: #f8f9fa;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            outline: none;
+        }
+
+        #responsavelSelect:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .responsavel-container label {
+            font-size: 1em;
+            color: #2c3e50;
+            font-family: 'Arial', sans-serif;
+        }
+
+        @media (max-width: 600px) {
+            html, body {
+                width: 100vw;
+                min-height: 100vh;
+                height: 100vh;
+                margin: 0;
+                padding: 0;
+                overflow-x: hidden;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+            body {
+                padding: 0;
+                min-height: 100vh;
+                height: 100vh;
+            }
+            .container {
+                max-width: 100vw;
+                width: 100vw;
+                min-height: 100vh;
+                height: 100vh;
+                border-radius: 0;
+                margin: 0;
+                box-shadow: none;
+                display: flex;
+                flex-direction: column;
+                justify-content: stretch;
+            }
+            .header {
+                border-radius: 0;
+                margin: 0;
+            }
+            .search-container {
+                border-radius: 0;
+                padding: 10px 5px 0 5px;
+                margin: 0;
+            }
+            .table-container {
+                border-radius: 0;
+                padding: 0 2px 10px 2px;
+                margin: 0;
+                max-height: unset;
+                flex: 1 1 auto;
+            }
+            .stats {
+                border-radius: 0;
+                margin: 0;
+            }
+            .header h1 {
+                font-size: 1.1em;
+            }
+
+            .header p {
+                font-size: 0.8em;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 8px 4px;
+            }
+
+            .button-group {
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .btn {
+                font-size: 0.85em;
+                padding: 7px 10px;
+            }
+
+            .table-container {
+                padding: 5px;
+            }
+
+            .responsavel-container {
+                padding: 10px 5px 0 5px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            #responsavelSelect {
+                font-size: 0.95em;
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 Controle de Presença</h1>
+            <p>Marcação de entrada e saída</p>
+        </div>
+
+        <div class="controls">
+            <div class="date-display">
+                📅 <span id="currentDate"></span>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="generatePDF()">
+                    📄 Gerar PDF
+                </button>
+                <button class="btn btn-warning" onclick="clearAllStatus()">
+                    🔄 Limpar Tudo
+                </button>
+            </div>
+        </div>
+
+        <div class="responsavel-container">
+            <label for="responsavelSelect"><b>Responsável:</b></label>
+            <select id="responsavelSelect">
+                <option value="">Selecione...</option>
+            </select>
+        </div>
+
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" class="search-input"
+                    placeholder="Pesquisar por nome ou matrícula...">
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Nome</th>
+                        <th>Entrada</th>
+                        <th>Saída</th>
+                    </tr>
+                </thead>
+                <tbody id="employeeTable">
+                    <!-- Tabela será preenchida via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        // URL do seu Apps Script Web App (ajuste para seu script)
+        const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbz8LEhqoUh_w9UfUz6xPzVvdOesju0_DKe1yaLS2pma2ukTwx7Gqz8LEcqYu8IwUapj/exec';
+
+        // Lista dinâmica de funcionários
+        let allEmployees = [];
+        let employees = [];
+        let responsaveis = [];
+        let selectedResponsavel = "";
+        let employeeStatus = {};
+        const CLEAR_PASSWORD = "1234";
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            await fetchEmployeesJSONP();
+        });
+
+        // Função para buscar dados via JSONP
+        function fetchEmployeesJSONP() {
+            const callbackName = 'jsonpCallback_' + Math.random().toString(36).substr(2, 8);
+            window[callbackName] = function (data) {
+                allEmployees = data;
+                responsaveis = [...new Set(allEmployees.map(emp => emp.Responsável).filter(Boolean))];
+                employees = allEmployees;
+                setupResponsavelSelect();
+                loadData();
+                renderEmployeeTable();
+                setupSearch();
+                updateCurrentDate();
+                delete window[callbackName];
+                script.remove();
+            };
+            const script = document.createElement('script');
+            script.src = `${SHEET_API_URL}?callback=${callbackName}`;
+            document.body.appendChild(script);
+        }
+
+        // Preenche o select de responsável
+        function setupResponsavelSelect() {
+            const select = document.getElementById('responsavelSelect');
+            select.innerHTML = '<option value="">Selecione...</option>' + responsaveis.map(r => `<option value="${r}">${r}</option>`).join('');
+            select.addEventListener('change', function () {
+                selectedResponsavel = this.value;
+                employees = selectedResponsavel ? allEmployees.filter(emp => emp.Responsável === selectedResponsavel) : allEmployees;
+                renderEmployeeTable();
+            });
+        }
+
+        // Carrega dados salvos
+        function loadData() {
+            const savedData = localStorage.getItem('employeeAttendance');
+            if (savedData) {
+                employeeStatus = JSON.parse(savedData);
+            }
+        }
+
+        // Salva dados
+        function saveData() {
+            localStorage.setItem('employeeAttendance', JSON.stringify(employeeStatus));
+        }
+
+        // Atualiza data atual
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('pt-BR', options);
+        }
+
+        // Renderiza tabela de funcionários
+        function renderEmployeeTable() {
+            const tbody = document.getElementById('employeeTable');
+            tbody.innerHTML = '';
+
+            employees.forEach(employee => {
+                const status = employeeStatus[employee.Matrícula] || { entrada: false, saida: false, entradaTime: null, saidaTime: null };
+                const row = document.createElement('tr');
+                row.className = 'employee-row';
+
+                row.innerHTML = `
+                    <td class="matricula">${employee.Matrícula}</td>
+                    <td class="nome">${employee.Nome}</td>
+                    <td>
+                        <button class="status-btn entrada ${status.entrada ? 'marcado' : 'nao-marcado'}" 
+                                onclick="toggleStatus('${employee.Matrícula}', 'entrada')">
+                            ${status.entrada ? '🟢 OK' : '🔴 NO'}
+                        </button>
+                        ${status.entradaTime ? `<div class="time-display">${status.entradaTime}</div>` : ''}
+                    </td>
+                    <td>
+                        <button class="status-btn saida ${status.saida ? 'marcado' : 'nao-marcado'}" 
+                                onclick="toggleStatus('${employee.Matrícula}', 'saida')">
+                            ${status.saida ? '🔵 OK' : '⚫ NO'}
+                        </button>
+                        ${status.saidaTime ? `<div class="time-display">${status.saidaTime}</div>` : ''}
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Alterna status do funcionário
+        function toggleStatus(matricula, tipo) {
+            if (!employeeStatus[matricula]) {
+                employeeStatus[matricula] = { entrada: false, saida: false, entradaTime: null, saidaTime: null };
+            }
+
+            employeeStatus[matricula][tipo] = !employeeStatus[matricula][tipo];
+
+            if (employeeStatus[matricula][tipo]) {
+                const now = new Date();
+                employeeStatus[matricula][tipo + 'Time'] = now.toLocaleTimeString('pt-BR', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } else {
+                employeeStatus[matricula][tipo + 'Time'] = null;
+            }
+
+            saveData();
+            renderEmployeeTable();
+        }
+
+        // Configuração da busca
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function () {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('.employee-row');
+
+                rows.forEach(row => {
+                    const matricula = row.querySelector('.matricula').textContent.toLowerCase();
+                    const nome = row.querySelector('.nome').textContent.toLowerCase();
+
+                    if (matricula.includes(searchTerm) || nome.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Limpa todos os status (com verificação de senha)
+        function clearAllStatus() {
+            const enteredPassword = prompt("Digite a senha numérica para limpar os dados:");
+            if (enteredPassword === null) return;
+            if (enteredPassword === CLEAR_PASSWORD) {
+                employeeStatus = {};
+                saveData();
+                renderEmployeeTable();
+                alert('Registros limpos com sucesso!');
+            } else {
+                alert('Senha incorreta! A operação foi cancelada.');
+            }
+        }
+
+        // Gera PDF (download e mensagem WhatsApp)
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(18);
+            doc.text('RELATÓRIO DE PRESENÇA - ENTRADA E SAÍDA', 20, 20);
+            const now = new Date();
+            doc.setFontSize(12);
+            const responsavel = selectedResponsavel || 'Todos';
+            doc.text(`Responsável: ${responsavel}`, 20, 37);
+            doc.text(`Data do relatório: ${now.toLocaleDateString('pt-BR')} às ${now.toLocaleTimeString('pt-BR')}`, 20, 45);
+            // Cabeçalho da tabela
+            doc.setFontSize(9);
+            doc.text('MATRÍCULA', 20, 55);
+            doc.text('NOME', 60, 55);
+            doc.text('ENTRADA', 130, 55);
+            doc.text('SAÍDA', 170, 55);
+            doc.line(20, 57, 190, 57);
+            let y = 65;
+            let whatsappMsg = `RELATÓRIO DE PRESENÇA\nResponsável: ${responsavel}\nData: ${now.toLocaleDateString('pt-BR')}\n\nMATRÍCULA | NOME | ENTRADA | SAÍDA\n`;
+            employees.forEach(employee => {
+                if (y > 280) {
+                    doc.addPage();
+                    y = 20;
+                }
+                const status = employeeStatus[employee.Matrícula] || { entrada: false, saida: false, entradaTime: null, saidaTime: null };
+                doc.text(employee.Matrícula, 20, y);
+                doc.text(employee.Nome.substring(0, 25), 60, y);
+                doc.text(status.entrada ? `✓ ${status.entradaTime || ''}` : '✗', 130, y);
+                doc.text(status.saida ? `✓ ${status.saidaTime || ''}` : '✗', 170, y);
+                whatsappMsg += `${employee.Matrícula} | ${employee.Nome.substring(0, 18)} | ${status.entrada ? 'OK' : 'NO'}${status.entradaTime ? ' ' + status.entradaTime : ''} | ${status.saida ? 'OK' : 'NO'}${status.saidaTime ? ' ' + status.saidaTime : ''}\n`;
+                y += 6;
+            });
+            // Download do PDF com nome incremental
+            let versionKey = `relatorioPresencaVersion_${now.toISOString().slice(0, 10)}`;
+            let version = parseInt(localStorage.getItem(versionKey) || '1', 10);
+            const filename = `relatorio_presenca_${now.toISOString().slice(0, 10)}_V${version}.pdf`;
+            doc.save(filename);
+            localStorage.setItem(versionKey, (version + 1).toString());
+            // Compartilhamento via WhatsApp Web (mensagem formatada)
+            setTimeout(() => {
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(whatsappMsg)}`;
+                window.open(whatsappUrl, '_blank');
+            }, 800);
+        }
+    </script>
+</body>
+
+</html>
