@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Presença - Funcionários</title>
+    <title>Controle de Presença</title>
     <style>
         * {
             margin: 0;
@@ -13,558 +13,725 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #fbfbfc 0%, #b7ddfc 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            color: #333;
+            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            color: white;
-            padding: 16px 8px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 1.5em;
-            margin-bottom: 4px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-        }
-
-        .header p {
-            font-size: 0.95em;
-            opacity: 0.9;
-        }
-
-        .controls {
-            padding: 10px 10px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .date-display {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 7px 14px;
-            border: none;
-            border-radius: 18px;
-            cursor: pointer;
-            font-size: 0.95em;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #018016 0%, #54f77c 100%);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #6c757d 0%, #999999 100%);
-            color: white;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
-            color: white;
-        }
-
-        .btn-warning {
-            background: linear-gradient(135deg, #7c0000 0%, #f75369 100%);
-            color: white;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .search-container {
-            padding: 20px 30px 0 30px;
-            background: white;
-            border-bottom: 1px solid #e9ecef;
-            margin-bottom: 0;
-            border-radius: 15px 15px 0 0;
-        }
-
-        .search-box {
-            height: 50px;
+        .app-container {
+            max-width: 100vw;
+            min-height: 100vh;
+            background: #f8fafc;
             position: relative;
-            max-width: 400px;
+        }
+
+        /* Header com design glassmorphism */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 20px 16px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .date-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Seletor de responsável com design moderno */
+        .responsavel-section {
+            background: white;
+            margin: 16px;
+            padding: 16px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .responsavel-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #f9fbff;
+            margin-bottom: 8px;
+        }
+
+        .responsavel-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #f7fafc;
+            transition: all 0.2s;
+        }
+
+        .responsavel-select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+        }
+
+        /* Barra de busca flutuante */
+        .search-container {
+            position: relative;
+            margin: 0 16px 16px;
         }
 
         .search-input {
             width: 100%;
-            padding: 12px 45px 12px 15px;
-            border: 2px solid #e9ecef;
+            padding: 16px 20px 16px 50px;
+            border: none;
             border-radius: 25px;
-            font-size: 1em;
-            transition: border-color 0.3s ease;
+            font-size: 16px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s;
         }
 
         .search-input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
         }
 
         .search-icon {
             position: absolute;
-            right: 15px;
+            left: 18px;
             top: 50%;
             transform: translateY(-50%);
-            color: #adb5bd;
+            color: #a0aec0;
         }
 
-        .stats {
-            padding: 20px 30px;
-            background: #f8f9fa;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
+        /* Cards de estatísticas */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 0 16px 16px;
         }
 
         .stat-card {
             background: white;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 16px;
+            border-radius: 16px;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            min-width: 120px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:active {
+            transform: scale(0.98);
         }
 
         .stat-number {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 5px;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-number.presente {
+            color: #48bb78;
+        }
+
+        .stat-number.ausente {
+            color: #f56565;
         }
 
         .stat-label {
-            color: #6c757d;
-            font-size: 0.8em;
+            font-size: 12px;
+            color: #718096;
+            font-weight: 500;
         }
 
-        .table-container {
-            padding: 0 15px 15px 15px;
-            max-height: 65vh;
-            overflow-y: auto;
+        /* Lista de funcionários redesenhada */
+        .employees-container {
+            margin: 0 16px 100px;
+        }
+
+        .employee-card {
             background: white;
-            border-radius: 0 0 10px 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            margin-top: 0;
+            margin-bottom: 12px;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
         }
 
-        .table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            background: white;
-        }
-
-        .table th {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            color: white;
-            padding: 12px;
-            text-align: left;
-            font-weight: bold;
-            position: sticky;
+        .employee-card::before {
+            content: '';
+            position: absolute;
             top: 0;
-            z-index: 2;
-            font-size: 0.9em;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
         }
 
-        .table th:first-child {
-            border-top-left-radius: 10px;
+        .employee-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
         }
 
-        .table th:last-child {
-            border-top-right-radius: 10px;
+        .employee-info {
+            flex: 1;
         }
 
-        .table td {
+        .employee-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 2px;
+        }
+
+        .employee-id {
+            font-size: 12px;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .employee-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .attendance-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .attendance-btn {
             padding: 12px;
-            border-bottom: 1px solid #e9ecef;
-            font-size: 0.9em;
-        }
-
-        .table tr:hover {
-            background: #f8f9fa;
-            transition: all 0.2s ease;
-        }
-
-        .employee-row {
-            transition: all 0.3s ease;
-        }
-
-        .matricula {
-            font-weight: bold;
-            color: #2c3e50;
-            font-size: 0.85em;
-        }
-
-        .nome {
-            color: #495057;
-            font-size: 0.9em;
-        }
-
-        .status-btn {
-            padding: 6px 12px;
             border: none;
-            border-radius: 15px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            font-size: 0.7em;
-            width: 80px;
-            text-align: center;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
         }
 
-        .status-btn.entrada.marcado {
-            background: #28a745;
+        .attendance-btn:active {
+            transform: scale(0.95);
+        }
+
+        .attendance-btn.entrada.marcado {
+            background: linear-gradient(135deg, #48bb78, #38a169);
             color: white;
         }
 
-        .status-btn.entrada.nao-marcado {
-            background: #dc3545;
+        .attendance-btn.entrada.nao-marcado {
+            background: #f7fafc;
+            color: #718096;
+            border: 2px solid #e2e8f0;
+        }
+
+        .attendance-btn.saida.marcado {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
             color: white;
         }
 
-        .status-btn.saida.marcado {
-            background: #007bff;
-            color: white;
-        }
-
-        .status-btn.saida.nao-marcado {
-            background: #6c757d;
-            color: white;
-        }
-
-        .status-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .hidden {
-            display: none;
+        .attendance-btn.saida.nao-marcado {
+            background: #f7fafc;
+            color: #718096;
+            border: 2px solid #e2e8f0;
         }
 
         .time-display {
-            font-size: 0.7em;
-            color: #6c757d;
+            font-size: 11px;
+            opacity: 0.8;
             margin-top: 2px;
         }
 
-        .responsavel-container {
-            padding: 20px 30px 0 30px;
-            background: white;
-            border-bottom: 1px solid #e9ecef;
+        /* Botão de ação flutuante */
+        .fab-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .fab {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
         }
 
-        #responsavelSelect {
-            padding: 12px 20px;
-            border: 2px solid #e9ecef;
-            border-radius: 25px;
-            font-size: 1em;
-            font-family: 'Arial', sans-serif;
-            color: #2c3e50;
-            background: #f8f9fa;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            outline: none;
+        .fab:active {
+            transform: scale(0.95);
         }
 
-        #responsavelSelect:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        /* Modal para ações */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
         }
 
-        .responsavel-container label {
-            font-size: 1em;
-            color: #2c3e50;
-            font-family: 'Arial', sans-serif;
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
         }
 
-        @media (max-width: 600px) {
-            html, body {
-                width: 100vw;
-                min-height: 100vh;
-                height: 100vh;
-                margin: 0;
-                padding: 0;
-                overflow-x: hidden;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 20px 20px 0 0;
+            padding: 24px;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-btn.primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .modal-btn.danger {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+        }
+
+        .modal-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Estados vazios */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #718096;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-state-description {
+            font-size: 14px;
+        }
+
+        /* Animações e transições */
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* Responsividade para telas muito pequenas */
+        @media (max-width: 320px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .attendance-controls {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Modo escuro (opcional) */
+        @media (prefers-color-scheme: dark) {
             body {
-                padding: 0;
-                min-height: 100vh;
-                height: 100vh;
+                background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
             }
-            .container {
-                max-width: 100vw;
-                width: 100vw;
-                min-height: 100vh;
-                height: 100vh;
-                border-radius: 0;
-                margin: 0;
-                box-shadow: none;
-                display: flex;
-                flex-direction: column;
-                justify-content: stretch;
+
+            .app-container {
+                background: #1a202c;
             }
+
             .header {
-                border-radius: 0;
-                margin: 0;
-            }
-            .search-container {
-                border-radius: 0;
-                padding: 10px 5px 0 5px;
-                margin: 0;
-            }
-            .table-container {
-                border-radius: 0;
-                padding: 0 2px 10px 2px;
-                margin: 0;
-                max-height: unset;
-                flex: 1 1 auto;
-            }
-            .stats {
-                border-radius: 0;
-                margin: 0;
-            }
-            .header h1 {
-                font-size: 1.1em;
+                background: rgba(45, 55, 72, 0.95);
             }
 
-            .header p {
-                font-size: 0.8em;
+            .logo-text {
+                color: #f7fafc;
             }
 
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 8px 4px;
+            .responsavel-section,
+            .employee-card,
+            .stat-card {
+                background: #2d3748;
             }
 
-            .button-group {
-                justify-content: center;
-                gap: 8px;
+            .employee-name {
+                color: #f7fafc;
             }
 
-            .btn {
-                font-size: 0.85em;
-                padding: 7px 10px;
+            .search-input {
+                background: #2d3748;
+                color: #f7fafc;
             }
 
-            .table-container {
-                padding: 5px;
+            .modal-content {
+                background: #2d3748;
             }
 
-            .responsavel-container {
-                padding: 10px 5px 0 5px;
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            #responsavelSelect {
-                font-size: 0.95em;
-                padding: 10px 15px;
+            .modal-title {
+                color: #f7fafc;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
+    <div class="app-container">
+        <!-- Header -->
         <div class="header">
-            <h1>🏢 Controle de Presença</h1>
-            <p>Marcação de entrada e saída</p>
-        </div>
-
-        <div class="controls">
-            <div class="date-display">
-                📅 <span id="currentDate"></span>
-            </div>
-            <div class="button-group">
-                <button class="btn btn-primary" onclick="generatePDF()">
-                    📄 Gerar PDF
-                </button>
-                <button class="btn btn-warning" onclick="clearAllStatus()">
-                    🔄 Limpar Tudo
-                </button>
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">👥</div>
+                    <div class="logo-text">Presença</div>
+                </div>
+                <div class="date-badge" id="currentDate"></div>
             </div>
         </div>
 
-        <div class="responsavel-container">
-            <label for="responsavelSelect"><b>Responsável:</b></label>
-            <select id="responsavelSelect">
-                <option value="">Selecione...</option>
+        <!-- Seletor de Responsável -->
+        <div class="responsavel-section">
+            <div class="responsavel-label">Responsável</div>
+            <select class="responsavel-select" id="responsavelSelect">
+                <option value="">Selecionar responsável...</option>
             </select>
         </div>
 
+        <!-- Barra de Busca -->
         <div class="search-container">
-            <div class="search-box">
-                <input type="text" id="searchInput" class="search-input"
-                    placeholder="Pesquisar por nome ou matrícula...">
-                <span class="search-icon">🔍</span>
+            <div class="search-icon">🔍</div>
+            <input type="text" class="search-input" id="searchInput" placeholder="Buscar funcionário...">
+        </div>
+
+        <!-- Cards de Estatísticas -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number presente" id="presenteCount">0</div>
+                <div class="stat-label">Presentes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number ausente" id="ausenteCount">0</div>
+                <div class="stat-label">Ausentes</div>
             </div>
         </div>
 
-        <div class="table-container">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Matrícula</th>
-                        <th>Nome</th>
-                        <th>Entrada</th>
-                        <th>Saída</th>
-                    </tr>
-                </thead>
-                <tbody id="employeeTable">
-                    <!-- Tabela será preenchida via JavaScript -->
-                </tbody>
-            </table>
+        <!-- Lista de Funcionários -->
+        <div class="employees-container" id="employeesContainer">
+            <!-- Funcionários serão inseridos aqui -->
+        </div>
+
+        <!-- Estado Vazio -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-state-icon">👥</div>
+            <div class="empty-state-title">Nenhum funcionário encontrado</div>
+            <div class="empty-state-description">Tente ajustar os filtros de busca</div>
+        </div>
+
+        <!-- Botão de Ação Flutuante -->
+        <div class="fab-container">
+            <button class="fab" onclick="openModal()">⚡</button>
+        </div>
+
+        <!-- Modal de Ações -->
+        <div class="modal" id="actionModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Ações</div>
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-btn primary" onclick="generatePDF()">
+                        📄 Gerar Relatório PDF
+                    </button>
+                    <button class="modal-btn danger" onclick="clearAllStatus()">
+                        🔄 Limpar Registros
+                    </button>
+                    <button class="modal-btn" onclick="closeModal()" style="background: #f7fafc; color: #718096;">
+                        ✕ Cancelar
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
-        // URL do seu Apps Script Web App (ajuste para seu script)
+        // Configurações
         const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbz8LEhqoUh_w9UfUz6xPzVvdOesju0_DKe1yaLS2pma2ukTwx7Gqz8LEcqYu8IwUapj/exec';
+        const CLEAR_PASSWORD = "1234";
 
-        // Lista dinâmica de funcionários
+        // Variáveis globais
         let allEmployees = [];
-        let employees = [];
+        let filteredEmployees = [];
         let responsaveis = [];
         let selectedResponsavel = "";
         let employeeStatus = {};
-        const CLEAR_PASSWORD = "1234";
 
-        document.addEventListener('DOMContentLoaded', async function () {
-            await fetchEmployeesJSONP();
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function () {
+            updateCurrentDate();
+            fetchEmployeesJSONP();
+            setupSearch();
+            setupModal();
+            loadData();
         });
-
-        // Função para buscar dados via JSONP
-        function fetchEmployeesJSONP() {
-            const callbackName = 'jsonpCallback_' + Math.random().toString(36).substr(2, 8);
-            window[callbackName] = function (data) {
-                allEmployees = data;
-                responsaveis = [...new Set(allEmployees.map(emp => emp.Responsável).filter(Boolean))];
-                employees = allEmployees;
-                setupResponsavelSelect();
-                loadData();
-                renderEmployeeTable();
-                setupSearch();
-                updateCurrentDate();
-                delete window[callbackName];
-                script.remove();
-            };
-            const script = document.createElement('script');
-            script.src = `${SHEET_API_URL}?callback=${callbackName}`;
-            document.body.appendChild(script);
-        }
-
-        // Preenche o select de responsável
-        function setupResponsavelSelect() {
-            const select = document.getElementById('responsavelSelect');
-            select.innerHTML = '<option value="">Selecione...</option>' + responsaveis.map(r => `<option value="${r}">${r}</option>`).join('');
-            select.addEventListener('change', function () {
-                selectedResponsavel = this.value;
-                employees = selectedResponsavel ? allEmployees.filter(emp => emp.Responsável === selectedResponsavel) : allEmployees;
-                renderEmployeeTable();
-            });
-        }
-
-        // Carrega dados salvos
-        function loadData() {
-            const savedData = localStorage.getItem('employeeAttendance');
-            if (savedData) {
-                employeeStatus = JSON.parse(savedData);
-            }
-        }
-
-        // Salva dados
-        function saveData() {
-            localStorage.setItem('employeeAttendance', JSON.stringify(employeeStatus));
-        }
 
         // Atualiza data atual
         function updateCurrentDate() {
             const now = new Date();
             const options = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
             };
             document.getElementById('currentDate').textContent = now.toLocaleDateString('pt-BR', options);
         }
 
-        // Renderiza tabela de funcionários
-        function renderEmployeeTable() {
-            const tbody = document.getElementById('employeeTable');
-            tbody.innerHTML = '';
+        // Função para buscar dados via JSONP
+        function fetchEmployeesJSONP() {
+            const callbackName = 'jsonpCallback_' + Math.random().toString(36).substr(2, 8);
 
-            employees.forEach(employee => {
-                const status = employeeStatus[employee.Matrícula] || { entrada: false, saida: false, entradaTime: null, saidaTime: null };
-                const row = document.createElement('tr');
-                row.className = 'employee-row';
+            window[callbackName] = function (data) {
+                allEmployees = data;
+                responsaveis = [...new Set(allEmployees.map(emp => emp.Responsável).filter(Boolean))];
+                filteredEmployees = allEmployees;
 
-                row.innerHTML = `
-                    <td class="matricula">${employee.Matrícula}</td>
-                    <td class="nome">${employee.Nome}</td>
-                    <td>
-                        <button class="status-btn entrada ${status.entrada ? 'marcado' : 'nao-marcado'}" 
-                                onclick="toggleStatus('${employee.Matrícula}', 'entrada')">
-                            ${status.entrada ? '🟢 OK' : '🔴 NO'}
-                        </button>
-                        ${status.entradaTime ? `<div class="time-display">${status.entradaTime}</div>` : ''}
-                    </td>
-                    <td>
-                        <button class="status-btn saida ${status.saida ? 'marcado' : 'nao-marcado'}" 
-                                onclick="toggleStatus('${employee.Matrícula}', 'saida')">
-                            ${status.saida ? '🔵 OK' : '⚫ NO'}
-                        </button>
-                        ${status.saidaTime ? `<div class="time-display">${status.saidaTime}</div>` : ''}
-                    </td>
-                `;
-                tbody.appendChild(row);
+                setupResponsavelSelect();
+                renderEmployees();
+                updateStats();
+
+                // Cleanup
+                delete window[callbackName];
+                script.remove();
+            };
+
+            const script = document.createElement('script');
+            script.src = `${SHEET_API_URL}?callback=${callbackName}`;
+            document.body.appendChild(script);
+        }
+
+        // Configura o seletor de responsável
+        function setupResponsavelSelect() {
+            const select = document.getElementById('responsavelSelect');
+            select.innerHTML = '<option value="">Todos os responsáveis</option>' +
+                responsaveis.map(r => `<option value="${r}">${r}</option>`).join('');
+
+            select.addEventListener('change', function () {
+                selectedResponsavel = this.value;
+                filterEmployees();
             });
         }
 
-        // Alterna status do funcionário
+        // Configura a busca
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function () {
+                filterEmployees();
+            });
+        }
+
+        // Filtra funcionários
+        function filterEmployees() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            filteredEmployees = allEmployees.filter(employee => {
+                const matchesResponsavel = !selectedResponsavel || employee.Responsável === selectedResponsavel;
+                const matchesSearch = !searchTerm ||
+                    employee.Nome.toLowerCase().includes(searchTerm) ||
+                    employee.Matrícula.toLowerCase().includes(searchTerm);
+
+                return matchesResponsavel && matchesSearch;
+            });
+
+            renderEmployees();
+            updateStats();
+        }
+
+        // Renderiza funcionários
+        function renderEmployees() {
+            const container = document.getElementById('employeesContainer');
+            const emptyState = document.getElementById('emptyState');
+
+            if (filteredEmployees.length === 0) {
+                container.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            container.innerHTML = filteredEmployees.map(employee => {
+                const status = employeeStatus[employee.Matrícula] || {
+                    entrada: false,
+                    saida: false,
+                    entradaTime: null,
+                    saidaTime: null
+                };
+
+                const initials = employee.Nome.split(' ').map(n => n[0]).join('').substring(0, 2);
+
+                return `
+                    <div class="employee-card fade-in">
+                        <div class="employee-header">
+                            <div class="employee-info">
+                                <div class="employee-name">${employee.Nome}</div>
+                                <div class="employee-id">#${employee.Matrícula}</div>
+                            </div>
+                            <div class="employee-avatar">${initials}</div>
+                        </div>
+                        <div class="attendance-controls">
+                            <button class="attendance-btn entrada ${status.entrada ? 'marcado' : 'nao-marcado'}" 
+                                    onclick="toggleStatus('${employee.Matrícula}', 'entrada')">
+                                ${status.entrada ? '✓ Entrada' : '○ Entrada'}
+                                ${status.entradaTime ? `<div class="time-display">${status.entradaTime}</div>` : ''}
+                            </button>
+                            <button class="attendance-btn saida ${status.saida ? 'marcado' : 'nao-marcado'}" 
+                                    onclick="toggleStatus('${employee.Matrícula}', 'saida')">
+                                ${status.saida ? '✓ Saída' : '○ Saída'}
+                                ${status.saidaTime ? `<div class="time-display">${status.saidaTime}</div>` : ''}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Alterna status
         function toggleStatus(matricula, tipo) {
             if (!employeeStatus[matricula]) {
                 employeeStatus[matricula] = { entrada: false, saida: false, entradaTime: null, saidaTime: null };
@@ -583,87 +750,138 @@
             }
 
             saveData();
-            renderEmployeeTable();
+            renderEmployees();
+            updateStats();
+
+            // Feedback visual
+            navigator.vibrate && navigator.vibrate(50);
         }
 
-        // Configuração da busca
-        function setupSearch() {
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', function () {
-                const searchTerm = this.value.toLowerCase();
-                const rows = document.querySelectorAll('.employee-row');
+        // Atualiza estatísticas
+        function updateStats() {
+            let presente = 0;
+            let ausente = 0;
 
-                rows.forEach(row => {
-                    const matricula = row.querySelector('.matricula').textContent.toLowerCase();
-                    const nome = row.querySelector('.nome').textContent.toLowerCase();
-
-                    if (matricula.includes(searchTerm) || nome.includes(searchTerm)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
+            filteredEmployees.forEach(employee => {
+                const status = employeeStatus[employee.Matrícula];
+                if (status && status.entrada) {
+                    presente++;
+                } else {
+                    ausente++;
+                }
             });
+
+            document.getElementById('presenteCount').textContent = presente;
+            document.getElementById('ausenteCount').textContent = ausente;
         }
 
-        // Limpa todos os status (com verificação de senha)
-        function clearAllStatus() {
-            const enteredPassword = prompt("Digite a senha numérica para limpar os dados:");
-            if (enteredPassword === null) return;
-            if (enteredPassword === CLEAR_PASSWORD) {
-                employeeStatus = {};
-                saveData();
-                renderEmployeeTable();
-                alert('Registros limpos com sucesso!');
-            } else {
-                alert('Senha incorreta! A operação foi cancelada.');
+        // Carrega dados salvos
+        function loadData() {
+            const savedData = localStorage.getItem('employeeAttendance');
+            if (savedData) {
+                employeeStatus = JSON.parse(savedData);
             }
         }
 
-        // Gera PDF (download e mensagem WhatsApp)
+        // Salva dados
+        function saveData() {
+            localStorage.setItem('employeeAttendance', JSON.stringify(employeeStatus));
+        }
+
+        // Modal
+        function setupModal() {
+            const modal = document.getElementById('actionModal');
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+        }
+
+        function openModal() {
+            document.getElementById('actionModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('actionModal').classList.remove('active');
+        }
+
+        // Limpa todos os status
+        function clearAllStatus() {
+            const enteredPassword = prompt("Digite a senha para limpar todos os registros:");
+            if (enteredPassword === null) return;
+
+            if (enteredPassword === CLEAR_PASSWORD) {
+                employeeStatus = {};
+                saveData();
+                renderEmployees();
+                updateStats();
+                closeModal();
+
+                // Feedback
+                alert('✅ Registros limpos com sucesso!');
+            } else {
+                alert('❌ Senha incorreta!');
+            }
+        }
+
+        // Gera PDF
         function generatePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+
+            // Cabeçalho
             doc.setFontSize(18);
-            doc.text('RELATÓRIO DE PRESENÇA - ENTRADA E SAÍDA', 20, 20);
+            doc.text('RELATÓRIO DE PRESENÇA', 20, 20);
+
             const now = new Date();
             doc.setFontSize(12);
             const responsavel = selectedResponsavel || 'Todos';
-            doc.text(`Responsável: ${responsavel}`, 20, 37);
-            doc.text(`Data do relatório: ${now.toLocaleDateString('pt-BR')} às ${now.toLocaleTimeString('pt-BR')}`, 20, 45);
-            // Cabeçalho da tabela
-            doc.setFontSize(9);
-            doc.text('MATRÍCULA', 20, 55);
-            doc.text('NOME', 60, 55);
-            doc.text('ENTRADA', 130, 55);
-            doc.text('SAÍDA', 170, 55);
-            doc.line(20, 57, 190, 57);
-            let y = 65;
-            let whatsappMsg = `RELATÓRIO DE PRESENÇA\nResponsável: ${responsavel}\nData: ${now.toLocaleDateString('pt-BR')}\n\nMATRÍCULA | NOME | ENTRADA | SAÍDA\n`;
-            employees.forEach(employee => {
+            doc.text(`Responsável: ${responsavel}`, 20, 35);
+            doc.text(`Data: ${now.toLocaleDateString('pt-BR')} às ${now.toLocaleTimeString('pt-BR')}`, 20, 45);
+
+            // Tabela
+            doc.setFontSize(10);
+            doc.text('MATRÍCULA', 20, 60);
+            doc.text('NOME', 60, 60);
+            doc.text('ENTRADA', 130, 60);
+            doc.text('SAÍDA', 170, 60);
+            doc.line(20, 65, 190, 65);
+
+            let y = 75;
+            let whatsappMsg = `📋 RELATÓRIO DE PRESENÇA\n📅 ${now.toLocaleDateString('pt-BR')}\n👤 Responsável: ${responsavel}\n\n`;
+
+            filteredEmployees.forEach(employee => {
                 if (y > 280) {
                     doc.addPage();
                     y = 20;
                 }
+
                 const status = employeeStatus[employee.Matrícula] || { entrada: false, saida: false, entradaTime: null, saidaTime: null };
+
                 doc.text(employee.Matrícula, 20, y);
-                doc.text(employee.Nome.substring(0, 25), 60, y);
+                doc.text(employee.Nome.substring(0, 20), 60, y);
                 doc.text(status.entrada ? `✓ ${status.entradaTime || ''}` : '✗', 130, y);
                 doc.text(status.saida ? `✓ ${status.saidaTime || ''}` : '✗', 170, y);
-                whatsappMsg += `${employee.Matrícula} | ${employee.Nome.substring(0, 18)} | ${status.entrada ? 'OK' : 'NO'}${status.entradaTime ? ' ' + status.entradaTime : ''} | ${status.saida ? 'OK' : 'NO'}${status.saidaTime ? ' ' + status.saidaTime : ''}\n`;
-                y += 6;
+
+                const entradaStatus = status.entrada ? `✅ ${status.entradaTime || ''}` : '❌';
+                const saidaStatus = status.saida ? `✅ ${status.saidaTime || ''}` : '❌';
+                whatsappMsg += `${employee.Nome}\n📝 ${employee.Matrícula} | 🚪 ${entradaStatus} | 🚪 ${saidaStatus}\n\n`;
+
+                y += 8;
             });
-            // Download do PDF com nome incremental
-            let versionKey = `relatorioPresencaVersion_${now.toISOString().slice(0, 10)}`;
-            let version = parseInt(localStorage.getItem(versionKey) || '1', 10);
-            const filename = `relatorio_presenca_${now.toISOString().slice(0, 10)}_V${version}.pdf`;
+
+            // Download
+            const filename = `relatorio_presenca_${now.toISOString().slice(0, 10)}.pdf`;
             doc.save(filename);
-            localStorage.setItem(versionKey, (version + 1).toString());
-            // Compartilhamento via WhatsApp Web (mensagem formatada)
+
+            closeModal();
+
+            // WhatsApp
             setTimeout(() => {
                 const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(whatsappMsg)}`;
                 window.open(whatsappUrl, '_blank');
-            }, 800);
+            }, 1000);
         }
     </script>
 </body>
